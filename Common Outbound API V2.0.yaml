@@ -1,0 +1,735 @@
+openapi: 3.0.1
+info:
+  title: Common - Outbound from ePlanning API
+  description: Common - Outbound from ePlanning API
+  termsOfService: http://www.planningportal.nsw.gov.au
+  version: v2
+servers:
+  - url: /
+paths:
+  /UpdateAdditionalInfo/{CaseID}:
+    put:
+      summary: UpdateAdditionalInfo
+      description: 
+        This operation transfers additional information uploaded by the
+        applicant from ePlanning to the relevant organisation's IT system. This
+        additional information could either be provided voluntarily by the
+        applicant or as the result of a request from the relevant organisation.
+      parameters:
+        - name: CaseID
+          in: path
+          description: A fully qualified application number
+          required: true
+          schema:
+            type: string
+        - name: OrganisationID
+          in: header
+          description: 
+            Used by the API gateway to route the request to the relevant
+            organisation.
+          required: true
+          schema:
+            type: string
+        - name: IdempotencyId
+          in: header
+          description: 
+            Unique Id for this request. Allows the API to respond in an
+            idempotent way if it has already been called with these parameters
+            and prevents duplicate processing. Typically a UUID such as
+            "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Information request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdditionalInfo'
+        required: true
+      responses:
+        '200':
+          description: Additional Information Provided
+          content: {}
+        '400':
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Case not found or locked by another user
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /Reassign/{CaseID}:
+    put:
+      summary: Reassign
+      description: 
+        This operation updates the relevant organisation on assigning or
+        reassigning of the case.
+      operationId: put-reassign-caseid
+      parameters:
+        - name: CaseID
+          in: path
+          description: A fully qualified application number.
+          required: true
+          schema:
+            type: string
+        - name: OrganisationID
+          in: header
+          description: 
+            Used by the API gateway to route the request to the relevant
+            organisation.
+          required: true
+          schema:
+            type: string
+        - name: IdempotencyId
+          in: header
+          description: 
+            Unique Id for this request. Allows the API to respond in an
+            idempotent way if it has already been called with these parameters
+            and prevents duplicate processing. Typically a UUID such as
+            "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Information request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reassign'
+        required: true
+      responses:
+        '200':
+          description: Case reassigned
+          content: {}
+        '400':
+          description: Invalid request supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Case not found or locked by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+      x-codegen-request-body-name: body
+  /Documents/{DocID}:
+    get:
+      summary: Documents
+      description: Download a document attached to an application
+      operationId: GetDocumentsCommonOutboundV2
+      parameters:
+        - name: OrganisationID
+          in: header
+          description: 
+            Used by the API gateway to route the request to the relevant
+            organisation.
+          required: true
+          schema:
+            type: string
+        - name: DocID
+          in: path
+          description: The unique ID of the document to download
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Returns the file as a binary download
+          content:
+            application/*:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Invalid request supplied
+          content:
+            application/*:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Document not found
+          content:
+            application/*:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /CreateSubmission/{CaseID}:
+    post:
+      summary: CreateSubmission
+      description: 
+        This operation transfers the submission data to a relevant
+        organisation's IT system to create the submission.
+      parameters:
+        - name: CaseID
+          in: path
+          description: A fully qualified Exhibition case number
+          required: true
+          schema:
+            type: string
+        - name: OrganisationID
+          in: header
+          description: 
+            Used by the API gateway to route the request to the relevant
+            organisation.
+          required: true
+          schema:
+            type: string
+        - name: IdempotencyId
+          in: header
+          description: 
+            Unique Id for this request. Allows the API to respond in an
+            idempotent way if it has already been called with these parameters
+            and prevents duplicate processing. Typically a UUID such as
+            "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubmission'
+        required: true
+      responses:
+        '200':
+          description: Case updated
+          content: {}
+        '400':
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Case not found or locked by another user
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /ExhitbitionStatusUpdate/{CaseID}:
+    put:
+      summary: ExhitbitionStatusUpdate
+      description: 
+        This operation transfers the status update, as part of the exhibition
+        process, to a relevant organisation's IT system.
+      parameters:
+        - name: CaseID
+          in: path
+          description: A fully qualified Exhibition case number
+          required: true
+          schema:
+            type: string
+        - name: OrganisationID
+          in: header
+          description: 
+            Used by the API gateway to route the request to the relevant
+            organisation.
+          required: true
+          schema:
+            type: string
+        - name: IdempotencyId
+          in: header
+          description: 
+            Unique Id for this request. Allows the API to respond in an
+            idempotent way if it has already been called with these parameters
+            and prevents duplicate processing. Typically a UUID such as
+            "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExhitbitionStatusUpdate'
+        required: true
+      responses:
+        '200':
+          description: Case updated
+          content: {}
+        '400':
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Case not found or locked by another user
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /Withdraw/{CaseID}:
+    put:
+      summary: Withdraw
+      description: 
+        This operation transfers the applicant's decision to withdraw the
+        application to the relevant organisation's IT system.
+      operationId: put-withdraw-caseid
+      parameters:
+        - name: CaseID
+          in: path
+          description: A fully qualified application number.
+          required: true
+          schema:
+            type: string
+        - name: OrganisationID
+          in: header
+          description: 
+            Used by the API gateway to route the request to the relevant
+            organisation.
+          required: true
+          schema:
+            type: string
+        - name: IdempotencyId
+          in: header
+          description: 
+            Unique Id for this request. Allows the API to respond in an
+            idempotent way if it has already been called with these parameters
+            and prevents duplicate processing. Typically a UUID such as
+            "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Information request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Withdraw'
+        required: true
+      responses:
+        '200':
+          description: Case withdrawn
+          content: {}
+        '400':
+          description: Invalid request supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Case not found or locked by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+      x-codegen-request-body-name: body
+  /RequestAddInfo/{CaseID}:
+    put:
+      summary: RequestAddInfo
+      description: 
+        This operation requests the relevant organisation to provide additional
+        information.
+      operationId: post-RequestAddInfo-caseid-out
+      parameters:
+        - name: CaseID
+          in: path
+          description: A fully qualified application number.
+          required: true
+          schema:
+            type: string
+        - name: OrganisationID
+          in: header
+          description: 
+            Used by the API gateway to route the request to the relevant
+            organisation.
+          required: true
+          schema:
+            type: string
+        - name: IdempotencyId
+          in: header
+          description: 
+            Unique Id for this request. Allows the API to respond in an
+            idempotent way if it has already been called with these parameters
+            and prevents duplicate processing. Typically a UUID such as
+            "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Information request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqAddInfo'
+        required: true
+      responses:
+        '200':
+          description: Case withdrawn
+          content: {}
+        '400':
+          description: Invalid request supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Case not found or locked by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    reassign:
+      title: reassign
+      required:
+        - assignee
+      type: object
+      properties:
+        assignee:
+          $ref: '#/components/schemas/UpdatedBy'
+        updatedBy:
+          $ref: '#/components/schemas/UpdatedBy'
+    UpdatedBy:
+      title: UpdatedBy
+      type: object
+      properties:
+        person:
+          $ref: '#/components/schemas/PersonBody'
+    AdditionalInfo:
+      required:
+        - caseStatus
+        - responseDate
+      type: object
+      properties:
+        caseStatus:
+          maxLength: 100
+          type: string
+          description: 
+            This field is to track the case status of the additional information
+            request
+          example: Complete
+          minLength: 1
+        childCaseID:
+          type: string
+          description: This child case ID is to track the additional information request.
+        responseDate:
+          type: string
+          description: 
+            This is to track the date on which additional information is
+            provided.
+          format: date
+          minLength: 1
+        responseDetails:
+          type: string
+          description: Additional information description provided by the applicant
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DownloadableDocument'
+        updatedBy:
+          $ref: '#/components/schemas/UpdatedBy'
+    ReqAddInfo:
+      required:
+        - requestDetails
+        - updatedBy
+      type: object
+      properties:
+        childCaseID:
+          type: string
+          description: This child case ID is to track the additional information request.
+          example: AI-XXXX
+        caseStatus:
+          type: string
+          description: 
+            This field is to track the case status of the additional information
+            request.
+        requestDate:
+          type: string
+          description: This is to track the date and time of the request
+          format: date
+        requestDetails:
+          type: string
+          description: Short description of the request
+          minLength: 1
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DownloadableDocument'
+        updatedBy:
+          $ref: '#/components/schemas/UpdatedBy'
+    DownloadableDocument:
+      required:
+        - documentName
+        - documentType
+        - documentURL
+        - uploadedDateTime
+      type: object
+      properties:
+        documentName:
+          maxLength: 150
+          type: string
+          minLength: 1
+        documentType:
+          maxLength: 100
+          type: string
+          minLength: 1
+        uploadedDateTime:
+          type: string
+          format: date-time
+          minLength: 1
+        documentURL:
+          maxLength: 500
+          type: string
+          description: URL of the document to be downloaded
+          format: uri
+          minLength: 1
+        updatedBy:
+          type: string
+          example: Council
+    Withdraw:
+      title: Withdraw
+      required:
+        - caseStatus
+        - updatedBy
+        - withdrawalDate
+      type: object
+      properties:
+        caseStatus:
+          maxLength: 80
+          type: string
+          description: This is to track the application status.
+          example: Submitted
+          minLength: 1
+        withdrawalDate:
+          type: string
+          description: This is to track the date on which the case is withdrawn.
+          format: date
+          minLength: 1
+        withdrawalReason:
+          type: string
+          description: This is to track the reason for which the case is withdrawn.
+        documents:
+          type: array
+          description: Applicable for state DA.
+          items:
+            $ref: '#/components/schemas/DownloadableDocument'
+        updatedBy:
+          $ref: '#/components/schemas/UpdatedBy'
+    PersonBody:
+      required:
+        - contactNumber
+        - email
+        - familyName
+        - firstName
+      type: object
+      properties:
+        firstName:
+          maxLength: 20
+          type: string
+          example: John
+          minLength: 1
+        familyName:
+          maxLength: 20
+          type: string
+          example: Smith
+          minLength: 1
+        email:
+          maxLength: 250
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+          minLength: 1
+        contactNumber:
+          maxLength: 10
+          minLength: 8
+          pattern: ^[0-9]+$
+          type: string
+    Error:
+      title: Error
+      required:
+        - errorCode
+        - statusCode
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int32
+          example: 404
+        message:
+          type: string
+          example: Internal Server error 19876
+        activityId:
+          type: string
+          example: 00000011-0ab-xy00-0000-500000000000
+        errorCode:
+          type: string
+          example: DPE_TMS01
+          minLength: 1
+        errorDetails:
+          type: string
+          example: Inner Exceptions, Stack Trace, etc
+    CreateSubmission:
+      required:
+        - declarations
+        - submission
+        - submissionType
+      type: object
+      properties:
+        submissionType:
+          type: string
+          description: 
+            This is to track the application submission type. 1. I am making a
+            personal submission 2. I am submitting on behalf of my organisation
+            3. I am submitting on behalf of a Government agency/authority
+          example: Refer to description for values
+          minLength: 1
+        organisationName:
+          maxLength: 20
+          type: string
+          description: 
+            This is to track the government agency/authority for whom it was
+            submitted. Applicable when submissionType is 'I am submitting on
+            behalf of a Government agency/authority'
+        positionInOrganisation:
+          maxLength: 20
+          type: string
+          description: 
+            This is to track the applicant's position in the organisation.
+            Applicable when submissionType is 'I am submitting on behalf of a
+            Government agency/authority'
+        title:
+          type: string
+          enum:
+            - Mr
+            - Mrs
+            - Ms
+            - Miss
+        firstName:
+          maxLength: 20
+          type: string
+          description: This is to track the first name
+        familyName:
+          maxLength: 20
+          type: string
+          description: This is to track the family Name.
+        nameWithheld:
+          type: boolean
+          description: 
+            This is to track if the person who submits does not want their name
+            published. This is not applicable when submissionType is 'I am
+            submitting on behalf of a Government agency/authority'.
+        email:
+          type: string
+          description: This is to track the email ID.
+        address1:
+          type: string
+          description: This is to track the address
+        address2:
+          type: string
+          description: This is to track the additional address
+        suburbTownPostcode:
+          type: string
+          description: This is to track the suburb town postcode.
+        postCode:
+          type: string
+          description: This is to track the post code.
+        state:
+          type: string
+          description: 
+            This is to track the state in the address. 1. Australian Capital
+            Territory 2. New South Wales 3. Northern Territory 4. Queensland 5.
+            South Australia 6. Tasmania 7. Victoria 8. Western Australia
+          example: Refer to description for values
+        reportablePoliticalDonation:
+          type: boolean
+          description: 
+            This is to track if the person who submits has any political
+            donations to report.
+        submissionConsent:
+          type: string
+          description: 
+            This is to track the submission consent. 1. I support it 2. I object
+            to it 3. I am just providing comments
+          example: Refer to description for values
+        submission:
+          maxLength: 10000
+          type: string
+          minLength: 1
+        declarations:
+          type: array
+          description: This is mandatory field user need to accept terms and conditions.
+          items:
+            type: string
+          example:
+            - I agree to the Privacy statement
+            - I have read and understood the above
+            - I understand that by clicking the "Submit" button, I am providing
+              the information contained in this form to the Department of
+              Planning and Environment and confirm that that information is not
+              false or misleading
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DownloadableDocument'
+    ExhitbitionStatusUpdate:
+      required:
+        - caseStatus
+      type: object
+      properties:
+        caseStatus:
+          maxLength: 100
+          type: string
+          description: Status of the request for additional information
+          example: Complete
+          minLength: 1
+    NewsPaper:
+      required:
+        - dateOfCirculation
+        - hasSlotBooked
+        - nameOfNewsPaper
+      type: object
+      properties:
+        nameOfNewsPaper:
+          maxLength: 100
+          type: string
+          description: 
+            This is Mandatory Field when user selects to add News Paper. This
+            can be used during creation or updating the exhibition.
+          minLength: 1
+        hasSlotBooked:
+          type: boolean
+          description: 
+            This is to track if any slots are booked and this field is Mandatory
+            Field when user selects to add News Paper. This can be used during
+            creation or updating the exhibition.
+        dateOfCirculation:
+          type: string
+          description: 
+            This is to track date of circulation and this field is Mandatory
+            Field when user selects to add News Paper. This can be used during
+            creation or updating the exhibition.
+          format: date
+          minLength: 1
+    Success:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Exhibition case has been created successfully
+        CaseId:
+          type: string
+          example: EXH-1234
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api-key
+      in: header

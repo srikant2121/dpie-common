@@ -1,0 +1,145 @@
+swagger: '2.0'
+info:
+  description: Reference Data Management v1 API.
+  version: v1
+  title: 'Reference Data Management API '
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: api@environment.nsw.gov.au
+
+host: 'api-uat.apps1.nsw.gov.au'
+basePath: '/planning/OnlineReferenceData/v1'
+schemes:
+  - https
+paths:
+  '/ReferenceData':
+    get:
+      summary: ReferenceData
+      description: This operation retrieves the reference data list for the attributes.
+      consumes:
+        - application/json
+      parameters:
+        - name: digitalService
+          in: header
+          description: This holds the name of the digital service for which the reference data values are to be retreived. Following values for the relevant digital services are to be passed in the header. 
+           - DA
+           - StateDA
+           - CR
+           - CNR
+           - CDC
+           - S68
+           - PC10.7
+           - BIC
+           - PCC
+          
+          required: true
+          type: string
+        - name: operation
+          in: header
+          description: This holds the name of the API operation for which the reference data values are to be retreived. Operation name(as mentioned in the specific YAML) needed to be provided as the input. For example - AcceptReturn is the operation name mentioned in the relevant YAML which should be passed as a value in the header. 
+          required: false
+          type: string
+        - name: attribute
+          in: header
+          description: This holds the name of the YAML attribute for which the reference data values are to be retreived. Attribute name as mentioned in the relevant YAML should be provided as input. Examples - 'developmentTypes', 'developmentDescription' should be passed as a value in the header. 
+          required: false
+          type: string
+        - name: subtype
+          in: header
+          description: This holds the certificate types and is applicable for Post consent certificate service API only. Applicable values are 'CC','OC','SC','SWC' and 'PCA' which denotes certificate types.
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Operation successful, result attached
+          schema:
+            $ref: '#/definitions/output'
+        '400':
+          description: Invalid request supplied
+          schema:
+            $ref: '#/definitions/Error'
+
+  
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: api-key
+    in: header
+definitions:
+  Error:
+    type: object
+    required:
+    - statusCode
+    - errorCode
+    properties:
+      statusCode:
+        type: integer
+        example: 404
+      message:
+        type: string
+        example: Internal Server error 19876
+      activityId:
+        type: string
+        example: 00000011-0ab-xy00-0000-500000000000
+      errorCode:
+        type: string
+        example: DPE_TMS01
+      errorDetails:
+        type: string
+        example: Inner Exceptions, Stack Trace, etc 
+  ReferenceDataOutput:
+    type: object
+    properties:
+      operation:
+        type: string
+        description: This will be available with only digitalService as input parameter.
+      attributes:
+        type: array
+        items:
+          $ref: '#/definitions/ReferenceAttributes'
+      documentTypes:
+        type: array
+        items:
+          $ref: '#/definitions/ReferenceDocuments'
+  ReferenceDocuments:
+    type: object
+    properties:
+      conditions:
+        type: string
+      documentType:
+        type: string
+  ReferenceAttributes:
+    type: object
+    properties:
+      attribute:
+        type: string
+      description:
+        type: string
+        description: Visible when there is a special condition applicable for the values.
+      values:
+        type: array
+        items:
+          $ref: '#/definitions/ReferenceValue' 
+  ReferenceValue:
+    type: object
+    properties:
+      value:
+        type: string
+  output:
+    type: object
+    required:
+    - statusCode
+    properties:
+      statusCode:
+        type: integer
+        example: 200
+      message:
+        type: string
+        example: Operation successful, result attached
+      output:
+        type: array
+        items:
+          $ref: '#/definitions/ReferenceDataOutput'
+      
+  
+       

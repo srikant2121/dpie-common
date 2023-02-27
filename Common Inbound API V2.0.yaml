@@ -1,0 +1,1643 @@
+﻿openapi: 3.0.1
+info:
+  title: Common - Inbound to ePlanning API
+  description: Common - Inbound to ePlanning API
+  termsOfService: http://swagger.io/terms/
+  version: v2
+servers:
+- url: /
+paths:
+  /Return/{CaseID}:
+    put:
+      summary: Return
+      description: This operation transfers the relevant organisation's decision to
+        return the application from their IT system to the ePlanning.
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Return'
+        required: true
+      responses:
+        200:
+          description: Case returned
+          content: {}
+        400:
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /Reassign/{CaseID}:
+    put:
+      summary: Reassign
+      description: This operation reassigns the case from one user to another user
+        within the relevant organisation.
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reassign'
+        required: true
+      responses:
+        200:
+          description: Case reassigned
+          content: {}
+        400:
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /ProvideAddInfo/{CaseID}:
+    post:
+      summary: ProvideAddInfo
+      description: This operation transfers additional information uploaded by the
+        relevant organisation's IT system to the ePlanning. This operation is applicable
+        to certificate registration Service and referral cases.
+      operationId: ProvideAddInfo
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: body
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/ProvideAddInfo'
+        required: true
+      responses:
+        200:
+          description: Additional Information Provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvideAddInfoResponse'
+        400:
+          description: Invalid request supplied
+          content:
+            application/json:
+              schema:
+                type: object
+        404:
+          description: Case not found or locked by another user
+          content:
+            application/json:
+              schema:
+                type: object
+      x-codegen-request-body-name: body
+  /Withdraw/{CaseID}:
+    put:
+      summary: Withdraw
+      description: This operation transfers the relevant organisation's decision to
+        withdraw the application from their IT system to the ePlanning.
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Withdraw'
+        required: true
+      responses:
+        200:
+          description: Case withdrawn
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WithdrawResponse'
+        400:
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /ReqAddInfo/{CaseID}:
+    post:
+      summary: ReqAddInfo
+      description: This operation enables the relevant organisation to request that
+        the applicant uploads additional information to the ePlanning from their IT
+        system.
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqAddInfo'
+        required: true
+      responses:
+        200:
+          description: Request created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ReqAddInfoResponse'
+        400:
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /CloseAICase/{CaseID}:
+    put:
+      summary: CloseAICase
+      description: This operation transfers the relevant organisation's decision to
+        complete the application's AI case from their IT system to the ePlanning system.
+      operationId: put-CloseAICase-caseid
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Information request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloseAICase'
+        required: true
+      responses:
+        200:
+          description: Case closed successfully
+          content: {}
+        400:
+          description: Invalid request supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+      x-codegen-request-body-name: body
+  /Documents/{DocID}:
+    get:
+      summary: Documents
+      description: This operation enables the external organizations to request documents
+        available in ePlanning.
+      operationId: GetDocumentsV2
+      parameters:
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: DocID
+        in: path
+        description: The unique attachment ID
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Returns the file as a binary download
+          content:
+            application/*:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: Document ID not found
+          content:
+            application/*:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /UpdateMetadata/{CaseID}:
+    put:
+      summary: UpdateMetadata
+      description: This operation enables the relevant organisation to update the
+        document as sensitive document and/or assessment document and/or published
+        document.
+      parameters:
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Information request object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/MetaData'
+        required: true
+      responses:
+        200:
+          description: Metadata updated successfully.
+          content: {}
+        400:
+          description: Invalid request supplied
+          content:
+            application/*:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            application/*:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /Payment/{CaseID}:
+    put:
+      summary: Payment
+      description: This operation enables the applicant to receive the payment URL
+        to make the payment.
+      operationId: Payment
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: body
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/UpdatedByEmail'
+        required: true
+      responses:
+        200:
+          description: Payment URL Generated
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Payment'
+        400:
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /GetCaseInfo/{CaseID}:
+    get:
+      summary: GetCaseInfo
+      description: This operation enables the relevant organisation to request ePlanning
+        to resend the latest application from the planning portal to their IT system.
+      operationId: GetCaseInfo
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: ePlanning will send the latest event payload.
+          content: {}
+        400:
+          description: Invalid request supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+  /GetCaseInfoSync/{CaseID}:
+    get:
+      summary: GetCaseInfoSync
+      description: This operation enables the relevant organisation to request ePlanning
+        to resend the latest application from the planning portal to their IT system.
+        The case details will be sent synchronously.
+      operationId: GetCaseInfoSync
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: The latest case details of the requested caseID is returned
+            synchronously. Please refer to the relevant Create operation schemas to
+            map the responses. For e.g when requesting CR case details, CreateCR schema
+            can be referred.
+          content: {}
+        400:
+          description: Invalid request supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+  /GetRegisteredUsers:
+    get:
+      summary: GetRegisteredUsers
+      description: This operation fetches the details of the operators registered
+        in the ePlanning portal.
+      parameters:
+      - name: organisationID
+        in: header
+        description: Organisation ID will be provided as input and the respective
+          associated users will be fetched.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Operation successful, result attached
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/output'
+        400:
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+  /CreateRef/{CaseID}:
+    post:
+      summary: CreateRef
+      description: This operation transfers the referral details from the relevant
+        organisation to create the referral in the ePlanning system.
+      operationId: CreateRef
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Information request object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRef'
+        required: true
+      responses:
+        200:
+          description: Case Submitted by Applicant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRefResponse'
+        400:
+          description: Invalid request supplied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      deprecated: false
+      x-codegen-request-body-name: body
+  /CreateExhibition/{CaseID}:
+    post:
+      summary: CreateExhibition
+      description: This operation transfers the exhibition details from the relevant
+        organisation to create the exhibition in the ePlanning system.
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing.Typically, a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Exhibition'
+        required: true
+      responses:
+        200:
+          description: Exhibition case has been created successfully
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CreateExhibitionResponse'
+        400:
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /UpdateExhibition/{CaseID}:
+    put:
+      summary: UpdateExhibition
+      description: This operation transfers the exhibition details from the relevant
+        organisation to update the exhibition in the ePlanning system.
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified exhibition case number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing.Typically, a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditExhibition'
+        required: true
+      responses:
+        200:
+          description: Case updated
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Response'
+        400:
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /CreateSubmission/{CaseID}:
+    post:
+      summary: CreateSubmission
+      description: This operation transfers the submission details from the relevant
+        organisation to create the submission case in the ePlanning system.
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified Exhibition case number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubmission'
+        required: true
+      responses:
+        200:
+          description: Case updated
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Response'
+        400:
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+  /Reject/{CaseID}:
+    put:
+      summary: Reject
+      description: This operation transfers the relevant organisation's decision to
+        reject the application from their IT system to the ePlanning.
+      parameters:
+      - name: CaseID
+        in: path
+        description: A fully qualified application number
+        required: true
+        schema:
+          type: string
+      - name: OrganisationID
+        in: header
+        description: The relevant organisation name to indicate where the request
+          is originated from.
+        required: true
+        schema:
+          type: string
+      - name: IdempotencyID
+        in: header
+        description: Unique Id for this request. Allows the API to respond in an idempotent
+          way if it has already been called with these parameters and prevents duplicate
+          processing. Typically a UUID such as "63a9ba30-7a4b-4fac-b343-d1f05cf089f1"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reject'
+        required: true
+      responses:
+        200:
+          description: Case rejected
+          content: {}
+        400:
+          description: Invalid request supplied
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Case not found or locked by another user
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    CreateRef:
+      required:
+      - updatedByEmail
+      type: object
+      properties:
+        updateReason:
+          maxLength: 1500
+          type: string
+          description: This is to track the reason(s) for adding new referral(s) and/or
+            uploading documents.
+        agencyList:
+          type: array
+          description: This is to track the the agency name(s).
+          items:
+            $ref: '#/components/schemas/agencyList'
+        Documents:
+          type: array
+          description: Upload the documents if required as it is an optional field.
+          items:
+            $ref: '#/components/schemas/DownloadableDocument'
+        updatedByEmail:
+          maxLength: 250
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+    referralRequiredDocType:
+      type: string
+      description: This is to track the document required for referral. One of the
+        below mentioned values must be selected for document required for referral.
+        1. Land Title Instruments 2. Compliance Certificate 3. Boundary Approvals
+        4. Other
+      example: Refer to description for values
+    agencyList:
+      type: object
+      properties:
+        agencyName:
+          type: string
+          description: This is to track the name of the agency which provides the
+            decision. Few sample agency names are given below. Please reach out to DPE API support team for the complete list of agencies as required. 
+            list 1. Ausgrid 2. City of Sydney (Heritage Act delegation) 3. DPE - Crown Lands
+            4. Endeavour Energy 5. Essential Energy 6. Hunter Water Corporation 7.
+            SGSP (Australia) Assets Pty Ltd (branded as Jemena) 8. DPE - National Parks and Wildlife Service (NPWS) 9. Rail Infrastructure Corporation (Sydney Trains) 10. Roads and
+            Maritime Service 11. Sydney Water Corporation 12. Transgrid Services Pty
+            Limited 13. WaterNSW 14. DPE - Biodiversity, Conservation and Science 15. DPE – Hunter and Central Coast Development Corporation 16.Other Agency
+          example: Refer to description for values
+        otherAgencyName:
+          type: string
+          description: This is to track the other agency name, applicable only when
+            agencyName=="other Agency".
+        agencyReferenceNumber:
+          type: string
+          description: This is to track the agency reference number and it's an optional
+            field.
+        reasonForReferral:
+          maxLength: 512
+          type: string
+          description: This is to track the reason why this referral is being made.
+        requiredDocumentType:
+          type: array
+          description: This is to track the list of required documents for each agency
+            name.
+          items:
+            $ref: '#/components/schemas/referralRequiredDocType'
+      description: This is to track the fields of agency.
+    UpdatedByEmail:
+      type: object
+      properties:
+        updatedByEmail:
+          maxLength: 250
+          type: string
+          description: Registered user mail address who performing the action.
+          example: johnsmith@yopmail.com
+    Payment:
+      type: object
+      properties:
+        PaymentURL:
+          type: string
+          description: Payment URL - to be used to Pay
+          example: https://gpp-digital-ui-preprod.apps.pcf-ext.testservicensw.net?paymentReference=
+            GPP-DIG-7LmKhNViSICwuH9GHdyoZg
+    MetaData:
+      title: MetaData
+      type: object
+      properties:
+        Documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentsInfo'
+        updatedByEmail:
+          maxLength: 256
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+    DocumentsInfo:
+      required:
+      - docID
+      - isAssessmentDoc
+      - isSensitiveDoc
+      type: object
+      properties:
+        docID:
+          type: string
+          description: ePlanning document ID.
+          example: DATA-WORKATTACH-FILE PEC-DPE-EP-WORK CDC-7850!20201124T125127.562
+            GMT
+        isAssessmentDoc:
+          type: boolean
+          description: This field is to update the document as assessment
+        isSensitiveDoc:
+          type: boolean
+          description: This field is to update the document as sensitive
+        isPublishDoc:
+          type: boolean
+          description: This field is to indicate if the document must be published
+            to subsite for Exhibition purposes. Applicable only for State DA to publish
+            the documents.
+    CloseAICase:
+      title: CloseAICase
+      required:
+      - updatedByEmail
+      type: object
+      properties:
+        childCaseID:
+          type: string
+          example: AI-XXXX
+        updatedByEmail:
+          maxLength: 250
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+    DocResponse:
+      title: DocResponse
+      type: object
+      properties:
+        documentName:
+          type: string
+          description: documentName which was uploaded as part of respective API opeartion
+          example: test.docx
+        documentType:
+          type: string
+          description: Type of Document under which repsective document was uploaded
+        eplanningDocId:
+          type: string
+          description: DocId of the respective document which was uploaded
+        externalOrgDocURL:
+          type: string
+          description: URL of the document which was uploaded
+    Return:
+      required:
+      - returnDate
+      - returnReasonDescriptionForOther
+      - returnReasons
+      - updatedByEmail
+      type: object
+      properties:
+        returnDate:
+          type: string
+          description: Date of return
+          format: date
+        returnReasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/returnReason'
+        returnReasonDescriptionForOther:
+          maxLength: 512
+          type: string
+          description: This is to track the detailed reason the council is returning
+            the application, required only when return reason was selected as Other.
+        updatedByEmail:
+          maxLength: 250
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+    Reassign:
+      required:
+      - assignee
+      - updatedByEmail
+      type: object
+      properties:
+        assignee:
+          $ref: '#/components/schemas/Person'
+        updatedByEmail:
+          maxLength: 256
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+      description: This is to track the person to whom this case is assigned to
+    output:
+      required:
+      - statusCode
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Operation successful, result attached
+        registeredUsersList:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsersOutput'
+    Withdraw:
+      required:
+      - updatedByEmail
+      - withdrawalDate
+      type: object
+      properties:
+        withdrawalDate:
+          type: string
+          description: This is to track the date on which the case is withdrawn
+          format: date
+        withdrawalReason:
+          maxLength: 512
+          type: string
+          description: This is to track the reason why the case is withdrawn
+        Documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DownloadableDocument'
+        updatedByEmail:
+          maxLength: 250
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+    ReqAddInfo:
+      required:
+      - requestDetails
+      - updatedByEmail
+      type: object
+      properties:
+        requestDetails:
+          type: string
+          description: This is to track the short description of the request
+        Documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DownloadableDocument'
+        updatedByEmail:
+          maxLength: 250
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+    Person:
+      type: object
+      properties:
+        person:
+          $ref: '#/components/schemas/PersonBody'
+    returnReason:
+      type: string
+      description: This is to track the reason for returning the application. One
+        of the below mentioned values must be selected for return reason 1. Incomplete
+        2. Poor Quality 3. Payment Not Received 4. Other
+      example: Refer to description for values
+    ProvideAddInfo:
+      required:
+      - provideDetails
+      - updatedByEmail
+      type: object
+      properties:
+        provideDetails:
+          maxLength: 512
+          type: string
+          description: This is to track the description of the response, required
+            when certifier is providing additional information
+        childCaseID:
+          type: string
+          description: Required only if responding to an existing AI case id for RFI
+        Documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DownloadableDocument'
+        updatedByEmail:
+          maxLength: 250
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+    UsersOutput:
+      type: object
+      properties:
+        user:
+          type: string
+          description: Operator ID of the user.
+          example: abc@yopmail.com
+        digitalServices:
+          type: array
+          items:
+            $ref: '#/components/schemas/DigitalServices'
+    DigitalServices:
+      type: object
+      properties:
+        digitalService:
+          type: string
+          description: The digital service for which current user is having access
+            to.
+          example: Development Application
+        role:
+          type: string
+          description: The type of organisation the user is associated with.
+          example: Council
+    PersonBody:
+      required:
+      - contactNumber
+      - emailAddress
+      - firstName
+      - surname
+      type: object
+      properties:
+        firstName:
+          maxLength: 32
+          type: string
+          example: John
+        otherName:
+          type: string
+          example: Darren
+        surname:
+          maxLength: 32
+          type: string
+          example: Smith
+        emailAddress:
+          maxLength: 256
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+        contactNumber:
+          maxLength: 10
+          pattern: ^[0-9]+$
+          type: string
+    DownloadableDocument:
+      required:
+      - documentName
+      - documentType
+      - documentURL
+      - uploadedDateTime
+      type: object
+      properties:
+        documentName:
+          maxLength: 150
+          type: string
+        documentType:
+          maxLength: 100
+          type: string
+        uploadedDateTime:
+          type: string
+          format: date-time
+        documentURL:
+          maxLength: 500
+          type: string
+          description: URL of the document to be downloaded
+          format: uri
+    declarations:
+      required:
+      - declaration
+      type: object
+      properties:
+        declaration:
+          type: string
+          description: Holds the consents the user is supposed to provide on submitting
+            the application. - The submission will be kept in accordance to the Privacy
+            statement
+          example: Refer to description for values
+    Error:
+      required:
+      - errorCode
+      - statusCode
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: Internal Server error 19876
+        activityId:
+          type: string
+          example: 00000011-0ab-xy00-0000-500000000000
+        errorCode:
+          type: string
+          example: DPE_TMS01
+        errorDetails:
+          type: string
+          example: Inner Exceptions, Stack Trace, etc
+    CreateSubmission:
+      required:
+      - declarations
+      - email
+      - exhibitionCaseID
+      - postCode
+      - state
+      - submission
+      - submissionConsent
+      - submissionType
+      - suburbTownPostcode
+      - updatedByEmail
+      type: object
+      properties:
+        submissionType:
+          type: string
+          description: This is to track the application submission type. One of the
+            below mentioned values must be selected for submission types. 1. I am
+            making a personal submission 2. I am submitting on behalf of my organisation
+            3. I am submitting on behalf of a Government agency/authority
+          example: Refer to description for values
+        exhibitionCaseID:
+          type: string
+          description: A fully qualified exhibition case number which is associated
+            with the relevant case ID provided in header.
+          example: EXH-XXXX
+        organisationName:
+          maxLength: 20
+          type: string
+          description: This is to track the government agency/authority organisation
+            name. Applicable when submissionType is 'I am submitting on behalf of
+            a Government agency/authority'
+        positionInOrganisation:
+          maxLength: 20
+          type: string
+          description: This is to track the applicant's position in the organisation.
+            Applicable when submissionType is 'I am submitting on behalf of a Government
+            agency/authority'
+        title:
+          type: string
+          description: Salutation of the user. One of the below mentioned values must
+            be selected for salutaion of the user 1. Mr 2. Mrs 3. Ms 4. Miss
+          example: Refer to description for values
+        firstName:
+          maxLength: 20
+          type: string
+          description: This is to track the first name
+        familyName:
+          maxLength: 20
+          type: string
+          description: This is to track the family name.
+        nameWithheld:
+          type: boolean
+          description: This is to track if the person who submits does not want their
+            name published. This is not applicable when submissionType is 'I am submitting
+            on behalf of a Government agency/authority'
+        email:
+          type: string
+          description: This is to track the Email Id.
+        address1:
+          type: string
+          description: This is to track the address.
+        address2:
+          type: string
+          description: This is to track the additional address.
+        suburbTownPostcode:
+          type: string
+          description: This is to track the suburb town postcode.
+        postCode:
+          type: number
+          description: This is to track the PostCode.
+        state:
+          type: string
+          description: This is to track the State.One of the below mentioned values
+            must be selected for state 1. Australian Capital Territory 2. New South
+            Wales 3. Northern Territory 4. Queensland 5. South Australia 6. Tasmania
+            7. Victoria 8. Western Australia
+          example: Refer to description for values.
+        reportablePoliticalDonation:
+          type: boolean
+          description: This is to track if the applicant has any political donations
+            to report
+        submissionConsent:
+          type: string
+          description: This is to track the opinion of the applicant on the submission.
+            One of the below mentioned values must be selected for submission content
+            1. I support it 2. I object to it 3. I am just providing comments
+          example: Refer to description for values
+        submission:
+          maxLength: 10000
+          type: string
+        declarations:
+          type: array
+          description: Required applicant declaration for create submission.
+          items:
+            $ref: '#/components/schemas/declarations'
+        Documents:
+          type: array
+          description: Applicable for online DA application.
+          items:
+            $ref: '#/components/schemas/DownloadableDocument'
+        updatedByEmail:
+          maxLength: 250
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+    Exhibition:
+      required:
+      - exhbitionTitle
+      - exhibitionEndDate
+      - exhibitionStartDate
+      - updatedByEmail
+      type: object
+      properties:
+        exhbitionTitle:
+          maxLength: 100
+          type: string
+          description: This is to track the title of the exhibition and this field
+            is mandatory when the consent authority selects doesPublicExhibitionRequired is
+            selected as true.
+        exhibitionStartDate:
+          type: string
+          description: This is to track the start date of the exhibition and this
+            field is mandatory when the applicant select doesPublicExhibitionRequired
+            is selected as true.
+          format: date
+        exhibitionEndDate:
+          type: string
+          description: This is to track the end date of the exhibition and this field
+            is mandatory when the applicant select doesPublicExhibitionRequired is
+            selected as true.
+          format: date
+        comments:
+          maxLength: 512
+          type: string
+          description: This is an optional field to provide comments in the exhibition
+            details screen. This can be used during creation or updating the exhibition.
+        detailedDescription:
+          type: string
+          description: This field is applicable for State DA and Mandatory to provide
+            detailed description in Exhibition details screen. This can be used during
+            creation or updating the exhibition.
+        addNewsPaper:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsPaper'
+        Documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentsToUpload'
+        DocumentsToPublish:
+          type: array
+          description: this is to publish the existing documents
+          items:
+            $ref: '#/components/schemas/DocumentsToPublish'
+        updatedByEmail:
+          maxLength: 250
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+    EditExhibition:
+      required:
+      - exhibitionEndDate
+      - updatedByEmail
+      type: object
+      properties:
+        exhibitionStartDate:
+          type: string
+          description: This is to track the start date of the exhibition and this
+            field is mandatory when the applicant select doesPublicExhibitionRequired
+            is selected as true.
+          format: date
+        exhibitionEndDate:
+          type: string
+          description: This is to track the end date of the exhibition and this field
+            is mandatory when the applicant select doesPublicExhibitionRequired is
+            selected as true.
+          format: date
+        comments:
+          maxLength: 512
+          type: string
+          description: This is an optional field to provide comments in the exhibition
+            details screen. This can be used during creation or updating the exhibition.
+        detailedDescription:
+          type: string
+          description: This field is applicable for State DA and Mandatory to provide
+            detailed description in Exhibition details screen. This can be used during
+            creation or updating the exhibition.
+        addNewsPaper:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsPaper'
+        Documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentsToUpload'
+        DocumentsToPublish:
+          type: array
+          description: this is to publish the existing documents
+          items:
+            $ref: '#/components/schemas/DocumentsToPublish'
+        updatedByEmail:
+          maxLength: 250
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+    NewsPaper:
+      required:
+      - dateOfCirculation
+      - hasSlotBooked
+      - nameOfNewsPaper
+      type: object
+      properties:
+        nameOfNewsPaper:
+          maxLength: 100
+          type: string
+          description: This is mandatory field when user selects to add newspaper.
+            This can be used during creation or updating the exhibition.
+        hasSlotBooked:
+          type: boolean
+          description: This is to track if any slots are booked and this field is
+            mandatory field when user selects to add News Paper. This can be used
+            during creation or updating the exhibition.
+        dateOfCirculation:
+          type: string
+          description: This is to track date of circulation and this field is Mandatory
+            Field when user selects to add News Paper. This can be used during creation
+            or updating the exhibition.
+          format: date
+    DocumentsToPublish:
+      required:
+      - docID
+      type: object
+      properties:
+        docID:
+          type: string
+          description: Document Id which was received as part of outbound call.
+          example: DATA-WORKATTACH-FILE PEC-DPE-EP-WORK CDC-7850!20201124T125127.562
+            GMT.
+        isPublishDoc:
+          type: boolean
+          description: This is an optional filed. user to select to indicate if the
+            document must be published to subsite
+    DocumentsToUpload:
+      required:
+      - documentName
+      - documentType
+      - documentURL
+      - uploadedDateTime
+      type: object
+      properties:
+        documentName:
+          maxLength: 150
+          type: string
+          description: documentName has to be appended with file extension
+          example: test.docx
+        documentType:
+          maxLength: 100
+          type: string
+        uploadedDateTime:
+          type: string
+          format: date-time
+        documentURL:
+          maxLength: 500
+          type: string
+          description: URL of the document to be downloaded
+          format: uri
+        isPublishDoc:
+          type: boolean
+          description: This is a optional filed. user to select to indicate if the
+            document must be published to subsite
+    CreateExhibitionResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Exhibition case has been created successfully
+        caseID:
+          type: string
+          example: EXH-1234
+        Documents:
+          type: array
+          description: Attached documents with eplanningDocIds.
+          items:
+            $ref: '#/components/schemas/DocResponse'
+    ProvideAddInfoResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Additional Information Provided
+        activityId:
+          type: string
+        Documents:
+          type: array
+          description: Attached documents with eplanningDocIds.
+          items:
+            $ref: '#/components/schemas/DocResponse'
+    WithdrawResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Case withdrawn
+        activityId:
+          type: string
+        Documents:
+          type: array
+          description: Attached documents with eplanningDocIds.
+          items:
+            $ref: '#/components/schemas/DocResponse'
+    ReqAddInfoResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Request created
+        caseID:
+          type: string
+          description: Case ID of the additional information request.
+          example: AI-XXXX
+        activityId:
+          type: string
+        Documents:
+          type: array
+          description: Attached documents with eplanningDocIds.
+          items:
+            $ref: '#/components/schemas/DocResponse'
+    CreateRefResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Case Submitted by Applicant
+        activityId:
+          type: string
+        Documents:
+          type: array
+          description: Attached documents with eplanningDocIds.
+          items:
+            $ref: '#/components/schemas/DocResponse'
+    Response:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Case updated
+        activityId:
+          type: string
+        Documents:
+          type: array
+          description: Attached documents with eplanningDocIds.
+          items:
+            $ref: '#/components/schemas/DocResponse'
+    Reject:
+      required:
+      - rejectDate
+      - rejectReason
+      - rejectReasonDescription
+      type: object
+      properties:
+        rejectDate:
+          type: string
+          description: This is to track the date of rejection
+          format: date
+        rejectReason:
+          type: string
+          description: This is to track the different reasons for rejecting. One of
+            the below mentioned values must be selected for reject reasons 1. The
+            application is illegible or unclear as to the development consent sought
+            2. The application does not contain the information specified in Part
+            1 of Schedule 1 of the EP&A Regulation 3. The application is for State
+            significant development or designated development and is not accompanied
+            by an environmental impact statement
+          example: Refer to description for values
+        rejectReasonDescription:
+          maxLength: 512
+          type: string
+          description: This is to track the detailed reason the council is rejecting
+            the application
+        updatedByEmail:
+          maxLength: 250
+          type: string
+          description: User must be registered in the planning portal
+          example: john.smith@gmail.com
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api-key
+      in: header
